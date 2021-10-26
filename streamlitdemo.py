@@ -25,7 +25,7 @@ st.write(pd.DataFrame({
 This is other example for dataframe
 """
 
-pd.DataFrame({
+df = pd.DataFrame({
     'column A' : ['A','B','C','D','E'],
     'Column B' : [1,2,3,4,5]
 })
