@@ -36,7 +36,7 @@ df_to_plot = pd.DataFrame(
     np.random.randn(20,3),columns=['Column A', 'Column B', 'Cokumn C']
 )
 
-st.likne_chart(df_to_plot)
+st.line_chart(df_to_plot)
 
 
 """
@@ -50,12 +50,13 @@ df_lat_lon = pd.DataFrame(
 
 st.map(df_lat_lon)
 
+
 if st.checkbox('show dataframe'):
   df_lat_lon
 
-  """
- 
-  ##  Let's try some widgets
- 
-  """
+"""
+
+##  Let's try some widgets
+
+"""
 
