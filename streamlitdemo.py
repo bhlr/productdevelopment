@@ -8,10 +8,6 @@ Original file is located at
 """
 
 
-import streamlit as st
-import numpy as np
-import pandas as pd
-
 st.title("this is my first app from")
 x = 4
 st.write(x,'square is',x**x)
@@ -45,6 +41,19 @@ st.likne_chart(df_to_plot)
 ## let's plot a map!
 """
 
-df_lat_lon= pd.DataFrame(
-    np.random.randn(1000,2) / [50,50] * 
+df_lat_lon = pd.DataFrame(
+    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
+    columns=['lat', 'lon']
 )
+
+st.map(df_lat_lon)
+
+if st.checkbox('show dataframe'):
+  df_lat_lon
+
+  """
+ 
+  ##  Let's try some widgets
+ 
+  """
+
