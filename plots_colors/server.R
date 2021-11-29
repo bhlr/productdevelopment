@@ -13,33 +13,39 @@ library(dplyr)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
   vals <- reactiveValues(
-    keeprows = rep(TRUE, nrow(mtcars))
+    keeprows = rep(TRUE, nrow(mtcars)),
+    grayrows  = rep(TRUE, nrow(mtcars))
   )
-    output$grafica_base_r <- renderPlot({
-        plot(mtcars$wt,mtcars$mpg,
-             xlab = 'wt', ylab = 'Millas por galon')
-    })
-    
-    output$grafica_ggplot <- renderPlot({
-        diamonds %>%
-            ggplot(aes(x=carat, y=price,color=color))+
-            geom_point() +
-            ylab('Precio')+
-            xlab('Kilates')+
-            ggtitle("Precio de diamantes por Kilate")
-    })
-    mtcars$color <- 1
+ 
+   
     observeEvent(input$clk, {
       df <- nearPoints(mtcars, input$clk,xvar='wt',yvar='mpg',allRows = TRUE)
       vals$keeprows <- xor(vals$keeprows, df$selected_)
-      #mtcars$color[mtcars$values==df$values] <<- "2"
-      output$click_data2 <- renderPrint({df})
+      output$mtcars_tbl <- DT::renderDataTable({
+        mtcars[!vals$keeprows, , drop = FALSE]
+      })
+    })
+    observeEvent(input$mouse_brush, {
+      df <- brushedPoints(mtcars, input$mouse_brush,xvar='wt',yvar='mpg',allRows = TRUE)
+      vals$keeprows <- xor(vals$keeprows, df$selected_)
+      output$mtcars_tbl <- DT::renderDataTable({
+        mtcars[!vals$keeprows, , drop = FALSE]
+      })
+    })
+    observeEvent(input$dclk, {
+      df <- nearPoints(mtcars, input$dclk,xvar='wt',yvar='mpg',maxpoints=1,allRows = TRUE)
+      vals$keeprows <- xor(vals$keeprows, df$selected_)
+    })
+    observeEvent(input$mouse_hover, {
+      df <- nearPoints(mtcars, input$mouse_hover,xvar='wt',yvar='mpg',maxpoints=1,allRows = TRUE)
+      vals$grayrows <- xor(vals$grayrows, df$selected_)
     })
     output$plot_click_options <-renderPlot({
         keep    <- mtcars[ vals$keeprows, , drop = FALSE]
-        exclude <- mtcars[!vals$keeprows, , drop = FALSE]
+        clicked <- mtcars[!vals$keeprows, , drop = FALSE]
+        grayed <- mtcars[!vals$grayrows, , drop = FALSE]
         ggplot(data = keep, aes(x = wt, y = mpg)) + geom_point() +
-          geom_point(data = exclude, color = "green")
+          geom_point(data = clicked, color = "green")
     })
     
     output$click_data <- renderPrint({
@@ -54,10 +60,14 @@ shinyServer(function(input, output,session) {
     })
     
     output$mtcars_tbl <- DT::renderDataTable({
-        #df <- nearPoints(mtcars, input$clk,xvar='wt',yvar='mpg')
-        df <- brushedPoints(mtcars,input$mouse_brush,
-                            xvar = 'wt', yvar = 'mpg')
-        df
+      mtcars
     })
+    
+  #  output$mtcars_tbl <- DT::renderDataTable({
+   #     #df <- nearPoints(mtcars, input$clk,xvar='wt',yvar='mpg')
+   #     df <- brushedPoints(mtcars,input$mouse_brush,
+   #                         xvar = 'wt', yvar = 'mpg')
+    #    df
+  #  })
 
 })

@@ -15,11 +15,6 @@ shinyUI(fluidPage(
     # Application title
     titlePanel("Interacciones de usuarios con graficas"),
     tabsetPanel(
-        tabPanel('plot',
-                 h1('Grafica shiny'),
-                 plotOutput("grafica_base_r"),
-                 plotOutput('grafica_ggplot')
-                 ),
         tabPanel('Clicks plots',
                 plotOutput("plot_click_options",
                            click = 'clk',
@@ -27,7 +22,6 @@ shinyUI(fluidPage(
                            hover = 'mouse_hover',
                            brush = 'mouse_brush'),
                 verbatimTextOutput("click_data"),
-                verbatimTextOutput("click_data2"),
                 DT::dataTableOutput('mtcars_tbl')
                  )
     )
